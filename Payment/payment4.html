@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Page</title>
+<style>
+  body {
+    background-color: #333333; /* Dark grey background */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Align items from the top */
+    min-height: 100vh;
+    margin: 0;
+    color: white; /* Optional: set text color to white for better contrast */
+  }
+
+  .spacer {
+    flex: 1; /* Takes up available space, pushing the button down */
+  }
+
+  #rzp-button1 {
+    background-color: #06d611; /* Button background color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    padding: 15px 30px; /* Padding for a larger button */
+    font-size: 18px; /* Larger font size */
+    border-radius: 25px; /* Fully rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-top: 100px; /* Margin to push the button down further */
+  }
+
+  #rzp-button1:hover {
+    background-color: #04b40d; /* Darker green on hover */
+    transform: translateY(-3px); /* Slight lift effect on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+  }
+
+  #rzp-button1:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 0 3px rgba(6, 214, 17, 0.4); /* Custom focus outline */
+  }
+</style>
+</head>
+<body>
+  <div class="spacer"></div> <!-- Spacer to push content down -->
+  <button id="rzp-button1">Pay</button>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    var options = {
+      "key": "rzp_test_CwanHbcfzSuqSN", // Enter the Key ID generated from the Dashboard
+      "name": "Travel Softie", // Your business name
+      "description": "Test Transaction",
+      "image": "bus1.jpg",
+      "order_id": "order_Ogqnh72afl1ayB", // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      "handler": function(response) {
+        console.log({
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_signature: response.razorpay_signature
+        });
+      },
+      "prefill": { // We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+        "name": "Gaurav Kumar", // Your customer's name
+        "email": "gaurav.kumar@example.com",
+        "contact": "9000090000" // Provide the customer's phone number for better conversion rates
+      },
+      "theme": {
+        "color": "#06d611" // Theme color
+      }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.on('payment.failed', function(response) {
+      alert(response.error.code);
+      alert(response.error.description);
+      alert(response.error.source);
+      alert(response.error.step);
+      alert(response.error.reason);
+      alert(response.error.metadata.order_id);
+      alert(response.error.metadata.payment_id);
+    });
+    document.getElementById('rzp-button1').onclick = function(e) {
+      rzp1.open();
+      e.preventDefault();
+    }
+  </script>
+</body>
+</html>
